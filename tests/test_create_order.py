@@ -48,19 +48,17 @@ class TestCreateOrder:
         ["abcdef"],
         ["invalid_hash"]
     ])
-
     def test_create_order_with_wrong_hash(self, wrong_hash):
-        
+
         response = requests.post(
             ORDERS_URL,
             json={"ingredients": wrong_hash}
         )
-
-        assert response.status_code >= 400
-
-        try:
+        
+        assert response.status_code in (400, 500), \
+            f"Unexpected status: {response.status_code}, body: {response.text}"
+        
+        if response.status_code == 400:
             body = response.json()
-            assert body.get("success") is False
-            assert "ids" in body.get("message", "") or "incorrect" in body.get("message", "")
-        except ValueError:
-            pass
+            assert body["success"] is False
+            assert "incorrect" in body["message"] or "ids" in body["message"]
