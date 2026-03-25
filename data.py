@@ -12,3 +12,6 @@ USER_WITHOUT_NAME = {
     "email": "test@yandex.ru",
     "password": "password"
 }
+
+ERROR_REQUIRED_FIELDS = "Email, password and name are required fields"
+ERROR_USER_EXISTS = "User already exists"

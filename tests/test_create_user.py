@@ -1,6 +1,6 @@
 import requests
 import allure
-from data import REGISTER_URL, LOGIN_URL, USER_WITHOUT_NAME
+from data import REGISTER_URL, LOGIN_URL, USER_WITHOUT_NAME, ERROR_REQUIRED_FIELDS, ERROR_USER_EXISTS
 from helpers import generate_user
 
 
@@ -34,7 +34,7 @@ class TestCreateUser:
             response = requests.post(REGISTER_URL, json=user)
 
         assert response.status_code == 403
-        assert response.json()["message"] == "User already exists"
+        assert response.json()["message"] == ERROR_USER_EXISTS
 
         
         with allure.step("Логин для удаления пользователя"):
@@ -49,4 +49,4 @@ class TestCreateUser:
             response = requests.post(REGISTER_URL, json=USER_WITHOUT_NAME)
 
         assert response.status_code == 403
-        assert response.json()["message"] == "Email, password and name are required fields"
+        assert response.json()["message"] == ERROR_REQUIRED_FIELDS
