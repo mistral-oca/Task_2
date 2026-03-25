@@ -3,6 +3,7 @@ import allure
 from data import REGISTER_URL
 from helpers import generate_user
 
+
 @allure.feature("User")
 class TestCreateUser:
 
@@ -10,7 +11,8 @@ class TestCreateUser:
     def test_create_unique_user(self):
         user = generate_user()
 
-        response = requests.post(REGISTER_URL, json=user)
+        with allure.step("Отправка POST запроса на создание уникального пользователя"):
+            response = requests.post(REGISTER_URL, json=user)
 
         assert response.status_code == 200
         assert response.json()["success"] is True
@@ -19,7 +21,8 @@ class TestCreateUser:
     def test_create_existing_user(self, create_user):
         user, _ = create_user
 
-        response = requests.post(REGISTER_URL, json=user)
+        with allure.step("Отправка POST запроса на создание уже существующего пользователя"):
+            response = requests.post(REGISTER_URL, json=user)
 
         assert response.status_code == 403
         assert response.json()["message"] == "User already exists"
@@ -32,7 +35,8 @@ class TestCreateUser:
             "password": "password"
         }
 
-        response = requests.post(REGISTER_URL, json=user)
+        with allure.step("Отправка POST запроса без обязательного поля name"):
+            response = requests.post(REGISTER_URL, json=user)
 
         assert response.status_code == 403
         assert response.json()["message"] == "Email, password and name are required fields"
