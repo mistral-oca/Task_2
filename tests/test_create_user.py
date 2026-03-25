@@ -1,6 +1,6 @@
 import requests
 import allure
-from data import REGISTER_URL
+from data import REGISTER_URL, LOGIN_URL
 from helpers import generate_user
 
 
@@ -8,7 +8,7 @@ from helpers import generate_user
 class TestCreateUser:
 
     @allure.title("Создание уникального пользователя")
-    def test_create_unique_user(self):
+    def test_create_unique_user(self, delete_user):
         user = generate_user()
 
         with allure.step("Отправка POST запроса на создание уникального пользователя"):
@@ -16,16 +16,31 @@ class TestCreateUser:
 
         assert response.status_code == 200
         assert response.json()["success"] is True
+        
+        with allure.step("Логин для получения access_token"):
+            login_response = requests.post(LOGIN_URL, json=user)
+
+        delete_user["access_token"] = login_response.json()["accessToken"]
 
     @allure.title("Создание уже существующего пользователя")
-    def test_create_existing_user(self, create_user):
-        user, _ = create_user
+    def test_create_existing_user(self, delete_user):
+        user = generate_user()
+        
+        with allure.step("Создание пользователя"):
+            requests.post(REGISTER_URL, json=user)
 
-        with allure.step("Отправка POST запроса на создание уже существующего пользователя"):
+        
+        with allure.step("Отправка POST запроса на уже существующего пользователя"):
             response = requests.post(REGISTER_URL, json=user)
 
         assert response.status_code == 403
         assert response.json()["message"] == "User already exists"
+
+        
+        with allure.step("Логин для удаления пользователя"):
+            login_response = requests.post(LOGIN_URL, json=user)
+
+        delete_user["access_token"] = login_response.json()["accessToken"]
 
     @allure.title("Создание пользователя без обязательного поля")
     def test_create_user_without_required_field(self):

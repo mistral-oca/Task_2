@@ -25,6 +25,17 @@ def create_user():
         headers={"Authorization": access_token}
     )
 
+@pytest.fixture
+def delete_user():
+    tokens = {}
+
+    yield tokens
+
+    if "access_token" in tokens:
+        requests.delete(
+            DELETE_USER_URL,
+            headers={"Authorization": tokens["access_token"]}
+        )
 
 @pytest.fixture
 def ingredients():
