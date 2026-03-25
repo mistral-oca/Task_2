@@ -7,3 +7,8 @@ UPDATE_USER_URL = BASE_URL + "/api/auth/user"
 
 ORDERS_URL = BASE_URL + "/api/orders"
 INGREDIENTS_URL = BASE_URL + "/api/ingredients"
+
+USER_WITHOUT_NAME = {
+    "email": "test@yandex.ru",
+    "password": "password"
+}

@@ -1,6 +1,6 @@
 import requests
 import allure
-from data import REGISTER_URL, LOGIN_URL
+from data import REGISTER_URL, LOGIN_URL, USER_WITHOUT_NAME
 from helpers import generate_user
 
 
@@ -44,14 +44,9 @@ class TestCreateUser:
 
     @allure.title("Создание пользователя без обязательного поля")
     def test_create_user_without_required_field(self):
-
-        user = {
-            "email": "test@yandex.ru",
-            "password": "password"
-        }
-
+        
         with allure.step("Отправка POST запроса без обязательного поля name"):
-            response = requests.post(REGISTER_URL, json=user)
+            response = requests.post(REGISTER_URL, json=USER_WITHOUT_NAME)
 
         assert response.status_code == 403
         assert response.json()["message"] == "Email, password and name are required fields"
