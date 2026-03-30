@@ -54,11 +54,11 @@ class TestCreateOrder:
             ORDERS_URL,
             json={"ingredients": wrong_hash}
         )
-        
-        assert response.status_code in (400, 500), \
+
+        assert response.status_code == 400, \
             f"Unexpected status: {response.status_code}, body: {response.text}"
-        
-        if response.status_code == 400:
-            body = response.json()
-            assert body["success"] is False
-            assert "incorrect" in body["message"] or "ids" in body["message"]
+
+        body = response.json()
+
+        assert body["success"] is False
+        assert "incorrect" in body["message"] or "ids" in body["message"]
